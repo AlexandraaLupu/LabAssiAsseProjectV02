@@ -1,13 +1,9 @@
 package service;
-//import static org.junit.Assert.*;
+import static org.junit.Assert.*;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 import domain.Student;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.Test;
 import repository.StudentXMLRepo;
 import validation.StudentValidator;
 import validation.ValidationException;
