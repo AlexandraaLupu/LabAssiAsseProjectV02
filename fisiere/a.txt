@@ -1,0 +1,36 @@
+
+Tema: 1
+Nota: 10.0
+Predata in saptamana: 2
+Deadline: 2
+Feedback: ok
+
+Tema: 1
+Nota: 10.0
+Predata in saptamana: 2
+Deadline: 2
+Feedback: ok
+
+Tema: 1
+Nota: 10.0
+Predata in saptamana: 2
+Deadline: 2
+Feedback: ok
+
+Tema: 1
+Nota: 10.0
+Predata in saptamana: 2
+Deadline: 2
+Feedback: ok
+
+Tema: 1
+Nota: 9.0
+Predata in saptamana: 2
+Deadline: 2
+Feedback: dcsfs
+
+Tema: 99
+Nota: 9.0
+Predata in saptamana: 6
+Deadline: 6
+Feedback: ok
