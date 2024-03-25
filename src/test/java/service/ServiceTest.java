@@ -184,5 +184,4 @@ public class ServiceTest {
         assertEquals(students.next().getID(), newStudent1.getID());
         this.service.deleteStudent("1");
     }
-
 }
