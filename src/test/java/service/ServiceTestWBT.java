@@ -1,12 +1,9 @@
 package service;
 
-import domain.Student;
+import static org.junit.Assert.*;
 import domain.Tema;
 import org.junit.Test;
-import repository.NotaXMLRepo;
-import repository.StudentXMLRepo;
 import repository.TemaXMLRepo;
-import validation.StudentValidator;
 import validation.TemaValidator;
 import validation.ValidationException;
 
@@ -15,7 +12,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static org.junit.Assert.assertThrows;
+
 
 public class ServiceTestWBT {
     private TemaXMLRepo temaFileRepository;
@@ -66,10 +63,79 @@ public class ServiceTestWBT {
     }
 
     @Test
+    public void testAddAssignmentEmptyID() {
+        setup();
+        Tema newTema = new Tema("", "a", 1, 1);
+        assertThrows(ValidationException.class, () -> this.service.addTema(newTema));
+        removeXML();
+    }
+
+    @Test
+    public void testAddAssignmentNullID() {
+        setup();
+        Tema newTema = new Tema(null, "a", 1, 1);
+        assertThrows(ValidationException.class, () -> this.service.addTema(newTema));
+        removeXML();
+    }
+
+    @Test
     public void testAddAssignmentEmptyDescription() {
         setup();
-        Tema newTema = new Tema("1", "", 12, 10);
+        Tema newTema = new Tema("1", "", 1, 1);
         assertThrows(ValidationException.class, () -> this.service.addTema(newTema));
+        removeXML();
+    }
+
+    @Test
+    public void testAddAssignmentDeadlineTooLarge() {
+        setup();
+        Tema newTema = new Tema("1", "a", 15, 1);
+        assertThrows(ValidationException.class, () -> this.service.addTema(newTema));
+        removeXML();
+    }
+
+    @Test
+    public void testAddAssignmentDeadlineTooSmall() {
+        setup();
+        Tema newTema = new Tema("1", "a", 0, 1);
+        assertThrows(ValidationException.class, () -> this.service.addTema(newTema));
+        removeXML();
+    }
+
+    @Test
+    public void testAddAssignmentReceivedTooSmall() {
+        setup();
+        Tema newTema = new Tema("1", "a", 1, 0);
+        assertThrows(ValidationException.class, () -> this.service.addTema(newTema));
+        removeXML();
+    }
+
+    @Test
+    public void testAddAssignmentReceivedTooLarge() {
+        setup();
+        Tema newTema = new Tema("1", "a", 1, 15);
+        assertThrows(ValidationException.class, () -> this.service.addTema(newTema));
+        removeXML();
+    }
+
+    @Test
+    public void testAddAssignmentValidAssignment() {
+        setup();
+        Tema newTema = new Tema("1", "a", 1, 1);
+        this.service.addTema(newTema);
+        assertEquals(this.service.getAllTeme().iterator().next(), newTema);
+        removeXML();
+    }
+
+    @Test
+    public void testAddAssignmentDuplicateAssignment() {
+        setup();
+        Tema newTema = new Tema("1", "a", 1, 1);
+        this.service.addTema(newTema);
+
+        Tema newTema2 = new Tema("1", "a", 1, 1);
+
+        assertEquals(this.service.addTema(newTema2).getID(), newTema.getID());
         removeXML();
     }
 }
