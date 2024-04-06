@@ -1,8 +1,10 @@
 package service;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import domain.Tema;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import repository.TemaXMLRepo;
 import validation.TemaValidator;
 import validation.ValidationException;
@@ -14,12 +16,12 @@ import java.io.IOException;
 
 
 
-public class ServiceTestWBT {
+public class WBTServiceTest {
     private TemaXMLRepo temaFileRepository;
     private TemaValidator temaValidator;
     private Service service;
 
-    public ServiceTestWBT() {
+    public WBTServiceTest() {
         createXML();
     }
 
@@ -50,6 +52,7 @@ public class ServiceTestWBT {
                 null
         );
     }
+
     static void removeXML() {
         new File("fisiere/temeTest.xml").delete();
     }

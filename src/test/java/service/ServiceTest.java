@@ -1,9 +1,8 @@
 package service;
-import static org.junit.Assert.*;
 
 
 import domain.Student;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import repository.StudentXMLRepo;
 import validation.StudentValidator;
 import validation.ValidationException;
@@ -12,6 +11,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ServiceTest {
     private StudentXMLRepo studentFileRepository;
