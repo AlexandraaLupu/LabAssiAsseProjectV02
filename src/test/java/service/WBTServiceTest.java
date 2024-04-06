@@ -1,10 +1,8 @@
 package service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import domain.Tema;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import repository.TemaXMLRepo;
 import validation.TemaValidator;
 import validation.ValidationException;
@@ -14,6 +12,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import static org.junit.Assert.*;
 
 
 public class WBTServiceTest {
