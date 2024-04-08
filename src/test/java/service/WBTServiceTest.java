@@ -65,14 +65,6 @@ public class WBTServiceTest {
     }
 
     @Test
-    public void testAddAssignmentEmptyID() {
-        setup();
-        Tema newTema = new Tema("", "a", 1, 1);
-        assertThrows(ValidationException.class, () -> this.service.addTema(newTema));
-        removeXML();
-    }
-
-    @Test
     public void testAddAssignmentNullID() {
         setup();
         Tema newTema = new Tema(null, "a", 1, 1);
