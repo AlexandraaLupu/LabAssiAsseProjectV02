@@ -46,7 +46,6 @@ public class MockitoIntegrationTest {
 
     private Service service;
 
-    @BeforeEach
     public void setup() {
 
         studentValidator = mock(StudentValidator.class);
@@ -63,6 +62,7 @@ public class MockitoIntegrationTest {
     @Test
     public void testAddStudent(){
 
+        setup();
         System.out.println("Test student - add");
 
         Student s1 = new Student("", "ana", 931, "ana@gmail.com");
@@ -87,6 +87,7 @@ public class MockitoIntegrationTest {
     @Test
     public void testAddStudentAndAssignment() {
 
+        setup();
         System.out.println("Test student and tema - add");
 
         Student s1 = new Student("222", "ana", 931, "ana@gmail.com");
@@ -115,6 +116,7 @@ public class MockitoIntegrationTest {
     @Test
     public void testAddStudentAndAssignmentAndGrade(){
 
+        setup();
         System.out.println("Test student and tema and nota - add");
 
         Student s1 = new Student("222", "ana", 931, "ana@gmail.com");
