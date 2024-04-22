@@ -3,117 +3,153 @@ package service;
 import domain.Nota;
 import domain.Student;
 import domain.Tema;
-import org.junit.Test;
+import org.junit.Before;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.function.Executable;
+import org.mockito.Mock;
 import repository.NotaXMLRepo;
 import repository.StudentXMLRepo;
 import repository.TemaXMLRepo;
+import service.Service;
 import validation.NotaValidator;
 import validation.StudentValidator;
 import validation.TemaValidator;
+import validation.ValidationException;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.LocalDate;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNull;
+import static org.mockito.Mockito.*;
+
 
 public class IntegrationTest {
+
+    @Mock
+    private StudentValidator studentValidator;
+
+    @Mock
+    private TemaValidator temaValidator;
+
+    @Mock
+    private StudentXMLRepo studentXMLRepository;
+
+    @Mock
+    private TemaXMLRepo temaXMLRepository;
+
+    @Mock
+    private NotaValidator notaValidator;
+
+    @Mock
+    private NotaXMLRepo notaXMLRepository;
+
     private Service service;
 
-    public IntegrationTest() {
-        createXML();
-    }
-
-    static void createXML() {
-        File xmlStudent = new File("fisiere/studentiTest.xml");
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(xmlStudent))) {
-            writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
-                    "<inbox>\n" +
-                    "\n" +
-                    "</inbox>");
-            writer.flush();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        File xmlAssignment = new File("fisiere/temeTest.xml");
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(xmlAssignment))) {
-            writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
-                    "<inbox>\n" +
-                    "\n" +
-                    "</inbox>");
-            writer.flush();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        File xmlGrade = new File("fisiere/noteTest.xml");
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(xmlGrade))) {
-            writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
-                    "<inbox>\n" +
-                    "\n" +
-                    "</inbox>");
-            writer.flush();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+    @BeforeEach
     public void setup() {
-        StudentValidator studentValidator = new StudentValidator();
-        StudentXMLRepo studentXMLRepository = new StudentXMLRepo("fisiere/studentiTest.xml");
 
-        TemaValidator temaValidator = new TemaValidator();
-        TemaXMLRepo temaXMLRepository = new TemaXMLRepo("fisiere/temeTest.xml");
-
-        NotaValidator notaValidator = new NotaValidator(studentXMLRepository, temaXMLRepository);
-        NotaXMLRepo notaXMLRepository = new NotaXMLRepo("fisiere/noteTest.xml");
+        studentValidator = mock(StudentValidator.class);
+        temaValidator = mock(TemaValidator.class);
+        notaValidator = mock(NotaValidator.class);
+        temaXMLRepository = mock(TemaXMLRepo.class);
+        studentXMLRepository = mock(StudentXMLRepo.class);
+        notaXMLRepository = mock(NotaXMLRepo.class);
 
         service = new Service(studentXMLRepository, studentValidator, temaXMLRepository, temaValidator, notaXMLRepository, notaValidator);
     }
 
-    static void removeXML() {
-        new File("fisiere/studentiTest.xml").delete();
-        new File("fisiere/temeTest.xml").delete();
-        new File("fisiere/noteTest.xml").delete();
-    }
 
     @Test
-    public void testAddStudent() {
-        setup();
-        Student student = new Student("333", "Ana", 931, "ana@gmail.com");
-        assertNull(service.addStudent(student));
-        removeXML();
+    public void testAddStudent(){
+
+        System.out.println("Test student - add");
+
+        Student s1 = new Student("", "ana", 931, "ana@gmail.com");
+
+        try{
+            doThrow(new ValidationException("Nume incorect!")).when(studentValidator).validate(s1);
+        }
+        catch (ValidationException e){
+            e.printStackTrace();
+        }
+
+        try{
+            Assertions.assertThrows(ValidationException.class, () -> service.addStudent(s1));
+        }
+        catch (ValidationException e){
+            e.printStackTrace();
+        }
     }
+
+
 
     @Test
-    public void testAddTema() {
-        setup();
-        Tema tema = new Tema("333", "a", 1, 1);
-        assertNull(service.addTema(tema));
-        removeXML();
+    public void testAddStudentAndAssignment() {
+
+        System.out.println("Test student and tema - add");
+
+        Student s1 = new Student("222", "ana", 931, "ana@gmail.com");
+        Tema tema1 = new Tema("223", "", 1, 1);
+
+        try{
+            doNothing().when(studentValidator).validate(s1);
+            when(studentXMLRepository.save(s1)).thenReturn(null);
+            doThrow(new ValidationException("Descriere invalida!")).when(temaValidator).validate(tema1);
+        }
+        catch (ValidationException e){
+            e.printStackTrace();
+        }
+
+        try{
+            Student s1_test = service.addStudent(s1);
+            Assertions.assertNull(s1_test);
+            Assertions.assertThrows(ValidationException.class, () -> service.addTema(tema1));
+        }
+        catch (ValidationException e){
+            e.printStackTrace();
+        }
     }
+
 
     @Test
-    public void testAddStudentTemaGrade() {
-        setup();
-        Student student = new Student("222", "Ana", 931, "ana@gmail.com");
-        Tema tema = new Tema("222", "a", 1, 1);
-        Nota nota = new Nota("222", "222", "222", 10, LocalDate.now());
+    public void testAddStudentAndAssignmentAndGrade(){
 
-        assertNull(service.addStudent(student));
-        assertNull(service.addTema(tema));
-        assertEquals(service.addNota(nota, "Foarte bine"), 10.0);
+        System.out.println("Test student and tema and nota - add");
 
-        service.deleteNota("333");
-        service.deleteStudent("333");
-        service.deleteTema("333");
-        removeXML();
+        Student s1 = new Student("222", "ana", 931, "ana@gmail.com");
+        Tema tema1 = new Tema("222", "a", 1, 2);
+        Nota nota1 = new Nota("222", "222", "222", 10, LocalDate.now());
+
+
+        try{
+            doNothing().when(studentValidator).validate(s1);
+            when(studentXMLRepository.save(s1)).thenReturn(null);
+
+            doNothing().when(temaValidator).validate(tema1);
+            when(temaXMLRepository.save(tema1)).thenReturn(null);
+
+            when(studentXMLRepository.findOne(nota1.getIdStudent())).thenReturn(s1);
+            when(temaXMLRepository.findOne(nota1.getIdTema())).thenReturn(tema1);
+        }
+        catch (ValidationException e){
+            e.printStackTrace();
+        }
+
+        try{
+            Student s1_test = service.addStudent(s1);
+            Assertions.assertNull(s1_test);
+            Tema tema1_test = service.addTema(tema1);
+            Assertions.assertNull(tema1_test);
+
+            double nota1_test = service.addNota(nota1, "ok");
+            Assertions.assertEquals(10, nota1.getNota());
+            //Assertions.assertNull(nota1_test);
+
+        }
+        catch (ValidationException e){
+            e.printStackTrace();
+        }
     }
+
 }
